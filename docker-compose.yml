@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres
@@ -5,22 +7,36 @@ services:
       - POSTGRES_PASSWORD=pgpass
       - POSTGRES_USER=pguser
       - POSTGRES_DB=pgdb
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
     ports: 
       - '5432:5432'
+    networks:
+      - shared-network
 
   api:
-    build: ./api
+    container_name: sample_api
+    image: api:1.0.0
     env_file: ./api/.env
+    build: ./api
     depends_on:
       - db
     ports:
       - '3000:3000'
+      - '5555:5555'
+    networks:
+      - shared-network
 
   client:
+    container_name: sample_client
+    restart: unless-stopped
+    image: client:1.0.0
+    env_file: ./client/.env
     build: ./client
     depends_on:
       - api
     ports:
-      - '8000:5173'
+      - '5173:5173'
+    networks:
+      - shared-network
+
+networks:
+  shared-network:

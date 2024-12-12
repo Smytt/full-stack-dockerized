@@ -1,6 +1,8 @@
 import axios from "axios";
-import { AuthPayload, Tech } from "./types";
-import { User } from "../types";
+import { AuthPayload } from "./types";
+import { Tech, User } from "../types";
+
+axios.defaults.withCredentials = true;
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,

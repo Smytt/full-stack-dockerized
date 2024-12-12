@@ -53,11 +53,7 @@ async function main() {
 }
 
 export const seed = () => {
-  main()
-    .catch((e) => {
-      console.error(e);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
+  main().catch((e) => {
+    console.error(e);
+  });
 };

@@ -33,7 +33,7 @@ const Users = () => {
               .map((tech) => tech.name)
               .join(", ")}${user.techs.length > 3 ? "..." : ""} (${
               user.techs.length
-            } techs)`}
+            } tech${user.techs.length === 1 ? "" : "s"})`}
           />
         ))}
       </Box>

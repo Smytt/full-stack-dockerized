@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { prisma } from "../..";
 
 export const authRoutes = express.Router();
 
@@ -18,8 +19,14 @@ authRoutes.post("/register", async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    users.push({ username, password: hashedPassword });
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+    const user = await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+      },
+    });
+    const { password: _, ...userWithoutPassword } = user;
+    const token = jwt.sign(userWithoutPassword, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
     res.json({ token });
@@ -29,13 +36,15 @@ authRoutes.post("/register", async (req, res) => {
   }
 });
 
-authRoutes.post("/login", (req, res) => {
+authRoutes.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     res.status(400).json({ message: "Username and password are required" });
     return;
   }
-  const user = users.find((user) => user.username === username);
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
   if (!user) {
     res.status(401).json({ message: "invalid credentials" });
     return;
@@ -46,7 +55,9 @@ authRoutes.post("/login", (req, res) => {
     res.status(401).json({ message: "invalid credentials" });
     return;
   }
-  const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+  const { password: _, ...userWithoutPassword } = user;
+
+  const token = jwt.sign(userWithoutPassword, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
   res.json({ token });

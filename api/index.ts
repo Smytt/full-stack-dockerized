@@ -3,6 +3,9 @@ import cors from "cors";
 import userRouter from "./src/routes/user.routes";
 import techRouter from "./src/routes/tech.routes";
 import authRoutes from "./src/routes/auth.routes";
+import { PrismaClient } from "@prisma/client";
+
+export const prisma = new PrismaClient();
 
 const app = express();
 app.use(express.json());

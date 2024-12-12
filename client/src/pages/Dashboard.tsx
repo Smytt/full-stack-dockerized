@@ -8,11 +8,11 @@ import {
 } from "@mui/material";
 import useThrottle from "../hooks/useThrottle";
 import { useEffect, useState } from "react";
-import { Tech } from "../api/types";
 import { getMe, getTechs, submitTechs } from "../api";
+import { Tech } from "../types";
 
 function Dashboard() {
-  const [tech, setTech] = useThrottle({ value: "", delay: 500 });
+  const [tech, setTech] = useThrottle({ value: "", delay: 150 });
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [techs, setTechs] = useState<Tech[]>([]);
 
@@ -74,6 +74,7 @@ function Dashboard() {
         disableCloseOnSelect
       />
       <Button
+        disabled={!!tech}
         variant="contained"
         color="primary"
         size="small"

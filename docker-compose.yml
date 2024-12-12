@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=pgpass
+      - POSTGRES_USER=pguser
+      - POSTGRES_DB=pgdb
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports: 
+      - '9000:5432'

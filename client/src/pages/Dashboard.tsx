@@ -7,16 +7,34 @@ import {
   Button,
 } from "@mui/material";
 import useThrottle from "../hooks/useThrottle";
-import { useEffect } from "react";
-
-const options = ["Option 1", "Option 2", "Option 3"];
+import { useEffect, useState } from "react";
+import { Tech } from "../api/types";
+import { getMe, getTechs, submitTechs } from "../api";
 
 function Dashboard() {
   const [tech, setTech] = useThrottle({ value: "", delay: 500 });
+  const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
+  const [techs, setTechs] = useState<Tech[]>([]);
 
   useEffect(() => {
-    // console.log(tech);
+    getMe().then((myTechs) => {
+      setSelectedTechs(myTechs.map((tech) => tech.name));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (tech)
+      getTechs(tech).then((data) => {
+        setTechs(data);
+      });
+    else setTechs([]);
   }, [tech]);
+
+  const handleSubmit = () => {
+    submitTechs(selectedTechs).then((user) => {
+      setSelectedTechs(user.techs.map((tech) => tech.name));
+    });
+  };
 
   return (
     <Box
@@ -33,7 +51,8 @@ function Dashboard() {
       <Autocomplete
         multiple
         freeSolo
-        options={options}
+        value={selectedTechs}
+        options={techs.map((option) => option.name)}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => {
             const { key, ...tagProps } = getTagProps({ index });
@@ -48,6 +67,9 @@ function Dashboard() {
         onInputChange={(event, newInputValue) => {
           setTech(newInputValue);
         }}
+        onChange={(event, value) => {
+          setSelectedTechs(value);
+        }}
         sx={{ width: "100%", marginTop: 2 }}
         disableCloseOnSelect
       />
@@ -55,7 +77,7 @@ function Dashboard() {
         variant="contained"
         color="primary"
         size="small"
-        onClick={() => {}}
+        onClick={handleSubmit}
       >
         Submit
       </Button>

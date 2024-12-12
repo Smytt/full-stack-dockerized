@@ -4,7 +4,6 @@ import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const { logout, user } = useAuth();
-
   return (
     <Box
       display="flex"

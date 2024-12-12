@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AuthPayload } from "./types";
+import { AuthPayload, Tech } from "./types";
+import { User } from "../types";
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -40,4 +41,26 @@ export const login = async ({ username, password }: AuthPayload) => {
   });
   localStorage.setItem("token", data.token);
   return data.token;
+};
+
+export const getTechs = async (filter?: string) => {
+  const { data } = await service.get("/tech", {
+    params: { filter },
+  });
+  return data;
+};
+
+export const submitTechs = async (techs: string[]): Promise<User> => {
+  const { data } = await service.post("/tech", { techs });
+  return data;
+};
+
+export const getMe = async (): Promise<Tech[]> => {
+  const { data } = await service.get("/users/me");
+  return data;
+};
+
+export const getUsers = async (): Promise<User[]> => {
+  const { data } = await service.get("/users");
+  return data;
 };

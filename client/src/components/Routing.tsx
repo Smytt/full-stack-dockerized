@@ -7,8 +7,6 @@ import Default from "../pages/Default";
 import Layout from "./Layout";
 import Users from "../pages/Users";
 import Stats from "../pages/Stats";
-import Tech from "../pages/Tech";
-import User from "../pages/User";
 
 const Routing = () => {
   const { user, loading } = useAuth();
@@ -18,9 +16,7 @@ const Routing = () => {
         <Route element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<Users />} />
-          <Route path="users/:id" element={<User />} />
           <Route path="tech-stats" element={<Stats />} />
-          <Route path="tech-stats/:id" element={<Tech />} />
         </Route>
       )}
       {!user && !loading && (

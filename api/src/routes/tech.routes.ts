@@ -10,7 +10,7 @@ techRouter.get("/", validateToken, async (req, res) => {
 
   if (filter) {
     techs = await prisma.tech.findMany({
-      where: { name: { ilike: `%${filter}%` } },
+      where: { name: { contains: filter, mode: "insensitive" } },
       include: {
         users: {
           select: {
